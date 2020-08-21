@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -96,7 +97,7 @@ public class FilesPath {
         try {
             Solution3.getFolderInfo();
         } catch (IOException ex) {
-            Logger.getLogger(FilesPath.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Exception Solution 3: " + ex);;
         }
         
     }
@@ -214,6 +215,10 @@ class Solution2{
 */
 
 class Solution3 extends SimpleFileVisitor<Path>{
+    static int totalDirs = 0;
+    static int totalFiles = 0;
+    static long totalSizeInDir = 0;
+    
     public static void getFolderInfo() throws IOException{
         String pathFromConsole;
         
@@ -241,11 +246,23 @@ class Solution3 extends SimpleFileVisitor<Path>{
             new SimpleFileVisitor<Path>(){
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                    System.out.println(file.getFileName());
+                    totalFiles++;
+                    totalSizeInDir += Files.size(file);
+                    System.out.println(file);
                     return FileVisitResult.CONTINUE;
                 }
+
+                @Override
+                public FileVisitResult preVisitDirectory (Path dir, BasicFileAttributes attrs) throws IOException {
+                    totalDirs++;
+                    System.out.println("--- DIR: " + dir);
+                    return FileVisitResult.CONTINUE;
+                }                
             });
-                        
+        
+        System.out.println("Total DIRS: " + totalDirs);
+        System.out.println("Total Files: " + totalFiles);
+        System.out.println("Total SIZSE: " + totalSizeInDir);
     }
 
 }
